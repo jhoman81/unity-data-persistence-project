@@ -7,39 +7,53 @@ using System.IO;
 
 public class ScoreManager : MonoBehaviour
 {
+    public static ScoreManager Instance;
+    public string playerName;
+    public int hiScore;
+    public string playerHiScoreName;
+
     // Start is called before the first frame update
-    void Start()
+    public void Awake()
     {
-        
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     [System.Serializable]
     class SaveData
     {
-        public static string playerName;
-        public static int score;
+        public string playerHiScoreName;
+        public int hiScore;
     }
 
-    public void SaveScore()
+    public void SaveHiScore(string playerHiScore, int hiScore)
     {
         SaveData data = new SaveData();
-        data.playerName = playerName;
+        data.playerHiScoreName = playerHiScore;
+        data.hiScore = hiScore;
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText(Application.persistentDataPath + "/scores.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/hiscore.json", json);
     }
 
-   public void LoadHighScore()
+   public void LoadHiScore()
    {
-        string path = Application.persistentDataPath + "/scores.json";
+        string path = Application.persistentDataPath + "/hiscore.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
             // Get high score and display name
-            playerName = data.playerName;
+            playerHiScoreName = data.playerHiScoreName;
+            hiScore = data.hiScore;
      }
    }
 
