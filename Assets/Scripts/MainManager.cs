@@ -13,12 +13,21 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+    public Text hiScoreText;
     
     private bool m_Started = false;
     private int m_Points;
     private bool m_GameOver = false;
+    public string playerHiScoreName;
+    public int hiScore;
 
-    
+    void Awake()
+    {
+        ScoreManager.Instance.LoadHiScore();
+        playerHiScoreName = ScoreManager.Instance.playerHiScoreName;
+        hiScore = ScoreManager.Instance.hiScore;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +69,7 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        SetHiScore();
     }
 
     void AddPoint(int point)
@@ -68,9 +78,35 @@ public class MainManager : MonoBehaviour
         ScoreText.text = $"Score : {m_Points}";
     }
 
+    private void IsHiScore()
+    {
+        if (m_Points > hiScore)
+        {
+            playerHiScoreName = ScoreManager.Instance.playerName;
+            hiScore = m_Points;
+
+            hiScoreText.text = $"HiScore - {playerHiScoreName.ToUpper()}: {hiScore}";
+            ScoreManager.Instance.SaveHiScore(playerHiScoreName, hiScore);
+        }
+    }
+
+    private void SetHiScore()
+    {
+        if (playerHiScoreName == null && hiScore == 0)
+        {
+            hiScoreText.text = "";
+        }
+        else
+        {
+            hiScoreText.text = $"HiScore - {playerHiScoreName.ToUpper()}: {hiScore}";
+        }
+    }
+
+
     public void GameOver()
     {
         m_GameOver = true;
+        IsHiScore();
         GameOverText.SetActive(true);
     }
 

@@ -19,7 +19,6 @@ public class MenuUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayButton.interactable = false;
         ScoreManager.Instance.LoadHiScore();
         hiScoreText.text = $"HiScore - {ScoreManager.Instance.playerHiScoreName.ToUpper()}: {ScoreManager.Instance.hiScore}";
     }
@@ -30,7 +29,6 @@ public class MenuUIHandler : MonoBehaviour
     }
     public void StartNew()
     {
-        PlayButton.interactable = true;
         playerName = inputField.text;
         ScoreManager.Instance.playerName = playerName;
         SceneManager.LoadScene(1);
